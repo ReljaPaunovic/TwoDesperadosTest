@@ -5,26 +5,23 @@ using UnityEngine;
 public class GreedyManhatan : PathfindingAlgorithmBase
 {
     private List<Vector2Int> pathFollowed;
-    private List<Vector2Int> ShortestPath;
+    private List<Vector2Int> OutputPath;
 
-    // Start is called before the first frame update
     void Start()
     {
         pathFollowed = new List<Vector2Int>();
-        ShortestPath = new List<Vector2Int>();
+        OutputPath = new List<Vector2Int>();
     }
 
-    public void GreedyManhattanAlgorithm(Vector2Int start, Vector2Int end, out Dictionary<Vector2Int, Vector2Int> cameFrom)
+    public void GreedyManhattanAlgorithm(Vector2Int start, Vector2Int end)
     {
-        
-
         Queue<KeyValuePair<Vector2Int, int>> frontier = new Queue<KeyValuePair<Vector2Int, int>>();
         frontier.Enqueue(new KeyValuePair<Vector2Int, int>(start, 0));
 
         Dictionary<Vector2Int, int> costSoFar = new Dictionary<Vector2Int, int>();
         costSoFar.Add(start, 0);
 
-        cameFrom = new Dictionary<Vector2Int, Vector2Int>();
+        Dictionary <Vector2Int,Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>();
         cameFrom.Add(start, start);
 
         List<Vector2Int> visited = new List<Vector2Int>();
@@ -72,6 +69,7 @@ public class GreedyManhatan : PathfindingAlgorithmBase
                 return 0;
             });
 
+            OutputPath.Add(current.Key);
 
             if (neighbours.Count > 0)
             {
@@ -92,6 +90,7 @@ public class GreedyManhatan : PathfindingAlgorithmBase
             else
             {
                 frontier.Enqueue(new KeyValuePair<Vector2Int, int>(cameFromLocal, current.Value - 1));
+                OutputPath.Remove(current.Key);
             }
 
         }
@@ -99,23 +98,9 @@ public class GreedyManhatan : PathfindingAlgorithmBase
 
     public override List<Vector2Int> RunAlgorithm(Vector2Int Start, Vector2Int End, out List<Vector2Int> path)
     {
-        Dictionary<Vector2Int, Vector2Int> cameFrom;
-        GreedyManhattanAlgorithm(Start, End, out cameFrom);
+        GreedyManhattanAlgorithm(Start, End);
 
-        path = new List<Vector2Int>();
-        /*
-        path.Add(End);
-        Vector2Int previousCell = cameFrom[End];
-        int stepCounter = 1;
-        while (previousCell != Start)
-        {
-            path.Add(previousCell);
-            stepCounter++;
-
-            previousCell = cameFrom[previousCell];
-        }
-        path.Add(Start);
-        path.Reverse();*/
+        path = OutputPath;
 
         return pathFollowed;
     }

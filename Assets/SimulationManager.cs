@@ -54,8 +54,9 @@ public class SimulationManager : MonoBehaviour
 
             //Randomize the size so you can see them all
             runner.transform.localScale = new Vector3(scale - (scaleIncrement * results.IndexOf(result)), scale - (scaleIncrement * results.IndexOf(result)), 1f);
-
-            runner.GetComponent<SpriteRenderer>().color = algorithms[results.IndexOf(result)].runnerColor;
+            SpriteRenderer runnerRenderer = runner.GetComponent<SpriteRenderer>();
+            runnerRenderer.color = algorithms[results.IndexOf(result)].runnerColor;
+            runnerRenderer.sortingOrder = results.IndexOf(result);
 
             runners.Add(runner);
             if(result.Count > maxLength)
@@ -76,9 +77,12 @@ public class SimulationManager : MonoBehaviour
 
                     GameObject highlightGO = Instantiate(highlightPrefab, MapController.instance.grid.transform);
                     highlightGO.transform.position = MapController.CellToWorld(result[i].x, result[i].y);
+                    
                     Color highlightColor = algorithms[results.IndexOf(result)].runnerColor;
                     highlightColor.a = 0.5f;
-                    highlightGO.GetComponent<SpriteRenderer>().color = highlightColor;
+                    SpriteRenderer highlightGoRenderer = highlightGO.GetComponent<SpriteRenderer>();
+                    highlightGoRenderer.color = highlightColor;
+                    highlightGoRenderer.sortingOrder = -1;
                 }
             }
             yield return new WaitForSeconds(0.25f);
