@@ -69,7 +69,6 @@ public class MapController : MonoBehaviour
 
         for (int i = 0; i < StartEndDistance; i++)
         {
-            //map[]
             if (Random.value < 0.5)
             {
                 if (xOffset == 0)
