@@ -4,16 +4,6 @@ using UnityEngine;
 
 public class Dijkstra : PathfindingAlgorithmBase
 {
-
-    private List<Vector2Int> pathFollowed;
-    private List<Vector2Int> ShortestPath;
-
-    void Start()
-    {
-        pathFollowed = new List<Vector2Int>();
-        ShortestPath = new List<Vector2Int>();
-    }
-
     public void DijkstraAlgorithm(Vector2Int start, Vector2Int end, out Dictionary<Vector2Int, Vector2Int> cameFrom)
     {
         Queue<KeyValuePair<Vector2Int, int>> frontier = new Queue<KeyValuePair<Vector2Int, int>>();
@@ -32,11 +22,13 @@ public class Dijkstra : PathfindingAlgorithmBase
 
             pathFollowed.Add(current.Key);
 
+            //If we have found the end my friend
             if (current.Key == end)
             {
                 return;
             }
 
+            //Go in all directions
             foreach (Vector2Int next in neighbours)
             {
                 int newCost = costSoFar[current.Key] + 1;
@@ -55,8 +47,8 @@ public class Dijkstra : PathfindingAlgorithmBase
         Dictionary<Vector2Int, Vector2Int> cameFrom;
         DijkstraAlgorithm(Start, End, out cameFrom);
 
+        //Construct the shortest path by going in reverse through cameFrom Dictionary
         path = new List<Vector2Int>();
-
         path.Add(End);
         Vector2Int previousCell = cameFrom[End];
         int stepCounter = 1;

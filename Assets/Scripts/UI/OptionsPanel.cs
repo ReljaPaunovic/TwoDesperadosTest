@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OptionsPanel : MonoBehaviour
 {
-    public bool isOpen = false;
+    private bool isOpen = false;
 
     private void Awake()
     {

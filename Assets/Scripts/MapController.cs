@@ -11,14 +11,27 @@ public enum TileType
 public class MapController : MonoBehaviour
 {
     public static MapController instance;
+
+    //Map size
+    [HideInInspector]
     public int n;
 
+    [HideInInspector]
     public int StartX;
+
+    [HideInInspector]
     public int StartY;
+
+    [HideInInspector]
     public int EndX;
+
+    [HideInInspector]
     public int EndY;
 
+    [HideInInspector]
     public TileType[,] map;
+
+    [HideInInspector]
     public Grid grid;
 
     [Header("Tile prefabs: ")]
@@ -27,6 +40,7 @@ public class MapController : MonoBehaviour
 
     private void Awake()
     {
+        //Using Singleton patern for Map Controller since we know, only one will exist
         instance = this;
         grid = GetComponent<Grid>();
 
@@ -39,11 +53,14 @@ public class MapController : MonoBehaviour
         map = new TileType[n, n];
         GenerateMap();
         RenderMap();
+
+        //Position camera so that the whole map is visible
         PositionCamera();
     }
 
     private void GenerateMap()
     {
+        //Generate map filled with blockers
         List<Vector2Int> blockers = new List<Vector2Int>();
         for (int i = 0; i < n; i++)
         {
@@ -132,6 +149,8 @@ public class MapController : MonoBehaviour
             blockers.Remove(new Vector2Int(StartX + DigX, StartY + DigY));
         }
 
+
+        //Randomly remove blockers so that only specified amount is left
         int numBlockersToRemove = n * n - OptionsController.instance.NumberOfObstacles - StartEndDistance -1;
         for (int i = 0; i < numBlockersToRemove; i++)
         {
@@ -142,6 +161,7 @@ public class MapController : MonoBehaviour
         }
     }
 
+    //Show the map on screen
     private void RenderMap()
     {
         for (int i = 0; i < n; i++)
@@ -169,13 +189,13 @@ public class MapController : MonoBehaviour
         else
             Camera.main.transform.position = CellToWorld(n / 2, n / 2) + new Vector3(-grid.cellSize.x / 2, -grid.cellSize.y / 2, -10);
 
-        Camera.main.orthographicSize = n / 2 + n/4;
+        Camera.main.orthographicSize = Mathf.Max(n / 2 + n / 4, 5);
 
     }
 
+    //Wrapper for getting the world location of cell
     public static Vector3 CellToWorld(int x, int y)
     {
-        //MapController.instance.grid.GetCellCenterWorld
         return MapController.instance.grid.GetCellCenterWorld(new Vector3Int(x, y,0));
     }
 }

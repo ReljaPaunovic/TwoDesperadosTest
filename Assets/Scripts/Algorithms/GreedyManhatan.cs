@@ -4,22 +4,10 @@ using UnityEngine;
 
 public class GreedyManhatan : PathfindingAlgorithmBase
 {
-    private List<Vector2Int> pathFollowed;
-    private List<Vector2Int> OutputPath;
-
-    void Start()
-    {
-        pathFollowed = new List<Vector2Int>();
-        OutputPath = new List<Vector2Int>();
-    }
-
     public void GreedyManhattanAlgorithm(Vector2Int start, Vector2Int end)
     {
-        Queue<KeyValuePair<Vector2Int, int>> frontier = new Queue<KeyValuePair<Vector2Int, int>>();
-        frontier.Enqueue(new KeyValuePair<Vector2Int, int>(start, 0));
-
-        Dictionary<Vector2Int, int> costSoFar = new Dictionary<Vector2Int, int>();
-        costSoFar.Add(start, 0);
+        Queue<Vector2Int> frontier = new Queue<Vector2Int>();
+        frontier.Enqueue(start);
 
         Dictionary <Vector2Int,Vector2Int> cameFrom = new Dictionary<Vector2Int, Vector2Int>();
         cameFrom.Add(start, start);
@@ -28,18 +16,19 @@ public class GreedyManhatan : PathfindingAlgorithmBase
 
         while (frontier.Count != 0)
         {
-            KeyValuePair<Vector2Int, int> current = frontier.Dequeue();
+            Vector2Int current = frontier.Dequeue();
 
-            visited.Add(current.Key);
-            pathFollowed.Add(current.Key);
+            visited.Add(current);
+            pathFollowed.Add(current);
 
-            List<Vector2Int> neighbours = GetNeighbours(current.Key);
+            List<Vector2Int> neighbours = GetNeighbours(current);
 
             Vector2Int cameFromLocal;
-            cameFrom.TryGetValue(current.Key, out cameFromLocal);
+            cameFrom.TryGetValue(current, out cameFromLocal);
 
             neighbours.Remove(cameFromLocal);
 
+            //Remove visited neighbours
             List<Vector2Int> neighboursToRemove = new List<Vector2Int>();
             foreach(Vector2Int neighbour in neighbours)
             {
@@ -51,8 +40,10 @@ public class GreedyManhatan : PathfindingAlgorithmBase
             foreach(Vector2Int neighbour in neighboursToRemove)
             {
                 neighbours.Remove(neighbour);
+                FoundPath.Remove(current);
             }
 
+            //Sort neighbours so the element closest to the end (Using Manhattan distance) is first
             neighbours.Sort(delegate (Vector2Int a, Vector2Int b)
             {
                 int aManhattan = PathfinderHelper.ManhattanDistance(a.x, a.y, end.x, end.y);
@@ -69,12 +60,11 @@ public class GreedyManhatan : PathfindingAlgorithmBase
                 return 0;
             });
 
-            OutputPath.Add(current.Key);
-
+            //If there is a neighbour, check him. Otherwise, backtrack
             if (neighbours.Count > 0)
             {
                 Vector2Int nextNeighbour = neighbours[0];
-
+                FoundPath.Add(current);
                 if (nextNeighbour == end)
                 {
                     pathFollowed.Add(nextNeighbour);
@@ -82,15 +72,15 @@ public class GreedyManhatan : PathfindingAlgorithmBase
                 }
                 else
                 {
-                    frontier.Enqueue(new KeyValuePair<Vector2Int, int>(nextNeighbour, current.Value + 1));
-                    cameFrom.Add(nextNeighbour, current.Key);
-                    visited.Add(current.Key);
+                    frontier.Enqueue(nextNeighbour);
+                    cameFrom.Add(nextNeighbour, current);
+                    visited.Add(current);
                 }
             }
             else
             {
-                frontier.Enqueue(new KeyValuePair<Vector2Int, int>(cameFromLocal, current.Value - 1));
-                OutputPath.Remove(current.Key);
+                frontier.Enqueue(cameFromLocal);
+                FoundPath.Remove(current);
             }
 
         }
@@ -99,9 +89,7 @@ public class GreedyManhatan : PathfindingAlgorithmBase
     public override List<Vector2Int> RunAlgorithm(Vector2Int Start, Vector2Int End, out List<Vector2Int> path)
     {
         GreedyManhattanAlgorithm(Start, End);
-
-        path = OutputPath;
-
+        path = FoundPath;
         return pathFollowed;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class OptionsController : MonoBehaviour
@@ -30,7 +31,11 @@ public class OptionsController : MonoBehaviour
 
     private void Awake()
     {
+        //Singleton pattern, we know that only one exists
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
+
+        //Keep this object through scenes, since we use it as a holder for data
+        if(SceneManager.GetActiveScene().name == "Menu")
+            DontDestroyOnLoad(this.gameObject);
     }
 }

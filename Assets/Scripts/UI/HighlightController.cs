@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UiController : MonoBehaviour
+public class HighlightController : MonoBehaviour
 {
     public Text CellInfo;
     public GameObject pointer;
