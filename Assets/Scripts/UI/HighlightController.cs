@@ -17,10 +17,10 @@ public class HighlightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Show the cell size to player when he hovers over the tile
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int cell = MapController.instance.grid.WorldToCell(mousePosition);
-        CellInfo.text = "X = " + cell.x + " : " + "Y = " + cell.y;
-
+        CellInfo.text = "<b>X = " + cell.x + " : " + "Y = " + cell.y + "</b>";
 
         pointerGO.transform.position = MapController.CellToWorld(cell.x, cell.y);
     }
