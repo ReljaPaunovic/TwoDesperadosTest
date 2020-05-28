@@ -35,7 +35,7 @@ public class GameCompletedController : MonoBehaviour
             ResultsListElement element = listElement.GetComponent<ResultsListElement>();
 
             //Let the list element setup itself
-            element.PopulateData(ResultsHolder.runResults.IndexOf(result), OptionsController.instance.MapSize, OptionsController.instance.NumberOfObstacles, result.algorithmNames, result.numberOfFieldsChecked, result.timeSpent);
+            element.PopulateData(ResultsHolder.runResults.IndexOf(result), result.mapSize, result.obstacleCount, result.algorithmNames, result.numberOfFieldsChecked, result.timeSpent);
         }
     }
 }

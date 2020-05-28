@@ -126,10 +126,12 @@ public class SimulationManager : MonoBehaviour
         {
             algNames.Add(algorithm.algorithmName);
         }
-        foreach(List<Vector2Int> result in results)
+        foreach (List<Vector2Int> result in results)
         {
             numOfFields.Add(result.Count);
         }
+        Debug.Log(OptionsController.instance.MapSize);
+
         RunResult runResult = new RunResult(OptionsController.instance.MapSize, OptionsController.instance.NumberOfObstacles, algNames, numOfFields, timeSpent);
         ResultsHolder.runResults.Add(runResult);
     }
